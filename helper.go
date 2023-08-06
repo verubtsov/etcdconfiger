@@ -49,16 +49,19 @@ func (e *EtcdValue) Strings() []string {
 }
 
 type Namespace struct {
-	Name     string
-	Fields   map[string]EtcdValue
-	EtcdKeys []string
-	Callback func(paramName string, prevValue EtcdValue)
+	Name      string
+	Fields    map[string]ConfigField
+	EtcdPaths []string
+	Callback  func(paramName string, prevValue EtcdValue)
 }
 
 type Update struct {
-	IsUpdate              bool
-	Key, Value, ParamName string
-	Level                 int
+	IsUpdate bool
+
+	Level     int
+	Key       string
+	Value     string
+	ParamName string
 }
 
 type ConfigField struct {

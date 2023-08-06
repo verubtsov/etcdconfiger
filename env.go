@@ -3,20 +3,26 @@ package etcdconfiger
 import (
 	"os"
 	"strconv"
+	"time"
 )
 
 func envString(name string, defaultValue string) string {
-	res := os.Getenv(name)
+	if res, exists := os.LookupEnv(name); exists {
+		return res
+	}
+	return defaultValue
+}
 
-	if res == "" {
+func envBool(name string, defaultValue bool) bool {
+	res, err := strconv.ParseBool(envString(name, ""))
+	if err != nil {
 		return defaultValue
 	}
 	return res
 }
 
-func envBool(name string, defaultValue bool) bool {
-	res, err := strconv.ParseBool(os.Getenv(name))
-
+func envDuration(name string, defaultValue time.Duration) time.Duration {
+	res, err := time.ParseDuration(envString(name, ""))
 	if err != nil {
 		return defaultValue
 	}
