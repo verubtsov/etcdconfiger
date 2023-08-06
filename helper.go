@@ -18,7 +18,7 @@ type EtcdValue struct {
 	value string
 }
 
-func (e *EtcdValue) NewEtcdValue(value string) EtcdValue {
+func NewEtcdValue(value string) EtcdValue {
 	return EtcdValue{
 		value: value,
 	}
@@ -70,4 +70,16 @@ type ConfigField struct {
 	StructField reflect.StructField
 	ETCDValues  map[int]Update
 	Assignable  bool
+}
+
+func newUpdate(key string, value string) Update {
+	update := Update{
+		Key:   string(key),
+		Value: string(value),
+	}
+	paramName := strings.Split(update.Key, "/")
+	update.ParamName = paramName[len(paramName)-1]
+	update.Level = len(paramName) - 1
+
+	return update
 }
