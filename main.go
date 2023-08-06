@@ -26,7 +26,7 @@ type EtcdConfiger struct {
 
 var (
 	endpoints      = strings.Split(envString("ETCD_ADDRESS", "127.0.0.1:2379"), ",")
-	pathToFolder   = envString("ETCD_PATH", "/")
+	pathToFolder   = envString("ETCD_PATH", "")
 	deleteUnused   = envBool("ETCD_DELETE_UNUSED", true)
 	sessionTimeout = envDuration("ETCD_SESSION_TIMEOUT", 5*time.Second)
 )
@@ -64,6 +64,7 @@ func (e *EtcdConfiger) namespaceInitialization(name string, config interface{}, 
 		}
 
 		configElem.Assignable = true
+		configElem.Name = configElemName
 
 		ns.EtcdPaths = append(ns.EtcdPaths, e.pathToFolder)
 		ns.Fields[configElemName] = configElem
@@ -158,7 +159,7 @@ func (e *EtcdConfiger) readFromEtcdPath(namespace string, path string) {
 
 	response, err := e.client.Get(ctx, path, clientv3.WithPrefix())
 	if err != nil {
-		e.logger.Fatalf("FATAL: |EtcdConfigurer| Error while reading values %+v\n", err)
+		e.logger.Fatalf("FATAL: |EtcdConfiger| Error while reading values %+v\n", err)
 	}
 
 	namespaceData := e.namespaces[namespace]
@@ -166,10 +167,10 @@ func (e *EtcdConfiger) readFromEtcdPath(namespace string, path string) {
 	for _, respValues := range response.Kvs {
 		update := newUpdate(string(respValues.Key), string(respValues.Value))
 
-		e.logger.Printf("INFO: |EtcdConfigurer| Recieved parameter: \"%s\", value: \"%s\", path: \"%s\"\n", update.ParamName, update.Value, update.Key)
+		e.logger.Printf("INFO: |EtcdConfiger| Recieved parameter: \"%s\", value: \"%s\", path: \"%s\"\n", update.ParamName, update.Value, update.Key)
 
 		if _, ok := namespaceData.Fields[update.ParamName]; !ok {
-			e.logger.Printf("WARN: |EtcdConfigurer| Unknown parameter \"%s\"\n", update.ParamName)
+			e.logger.Printf("WARN: |EtcdConfiger| Unknown parameter \"%s\"\n", update.ParamName)
 		} else {
 			namespaceData.Fields[update.ParamName].ETCDValues[update.Level] = update
 		}
