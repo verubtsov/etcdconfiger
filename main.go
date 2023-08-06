@@ -169,7 +169,7 @@ func (e *EtcdConfiger) readFromEtcdPath(namespace string, path string) {
 		e.logger.Printf("INFO: |EtcdConfigurer| Recieved parameter: \"%s\", value: \"%s\", path: \"%s\"\n", update.ParamName, update.Value, update.Key)
 
 		if _, ok := namespaceData.Fields[update.ParamName]; !ok {
-			e.logger.Printf("UPDATE: |EtcdConfigurer| Unknown parameter \"%s\"\n", update.ParamName)
+			e.logger.Printf("WARN: |EtcdConfigurer| Unknown parameter \"%s\"\n", update.ParamName)
 		} else {
 			namespaceData.Fields[update.ParamName].ETCDValues[update.Level] = update
 		}
