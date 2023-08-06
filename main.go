@@ -71,7 +71,7 @@ func (e *EtcdConfiger) namespaceInitialization(name string, config interface{}, 
 	return
 }
 
-func NewEtcdConfiger(pathToFolder string, log LoggerTemplate) *EtcdConfiger {
+func NewEtcdConfiger(log LoggerTemplate) *EtcdConfiger {
 	e := &EtcdConfiger{
 		endpoints:    endpoints,
 		pathToFolder: pathToFolder,
