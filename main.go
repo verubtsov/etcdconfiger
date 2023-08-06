@@ -27,7 +27,7 @@ type EtcdConfiger struct {
 var (
 	endpoints      = strings.Split(envString("ETCD_ADDRESS", "127.0.0.1:2379"), ",")
 	pathToFolder   = envString("ETCD_PATH", "/")
-	deleteUnused   = envBool("ETCD_DELETE_UNUSED", false)
+	deleteUnused   = envBool("ETCD_DELETE_UNUSED", true)
 	sessionTimeout = envDuration("ETCD_SESSION_TIMEOUT", 5*time.Second)
 )
 
@@ -81,6 +81,7 @@ func NewEtcdConfiger(log LoggerTemplate) *EtcdConfiger {
 		callbacks:       make(map[string]func([]string)),
 		namespaces:      make(map[string]*Namespace),
 		keyNamespaceMap: map[string][]*Namespace{},
+		logger: log,
 	}
 
 	e.logger.Printf("INFO: |EtcdConfiger| Connecting to ETCD endpoints\n")
